@@ -244,7 +244,7 @@ public class MorseController {
             circle = new Circle(x, y, NODE_RADIUS);
             circle.setFill(Color.WHITE);
             circle.setStroke(Color.DARKGRAY);
-            circle.setStrokeWidth(1);
+            circle.setStrokeWidth(2);
             node.circle = circle;
         } else {
             circle = node.circle;

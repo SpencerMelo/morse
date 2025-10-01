@@ -72,20 +72,17 @@ public class MorseController {
 
     private MorseTree<String> morseTree;
 
-    private Node<String> root;
-
     @FXML
     private void initialize() {
         morseTree = new MorseTree<>("");
-        this.root = morseTree.getRoot();
 
         treeViewerPane
             .layoutBoundsProperty()
             .addListener((obs, oldVal, newVal) -> {
-                if (newVal.getWidth() > 0 && root != null) {
+                if (newVal.getWidth() > 0 && morseTree.getRoot() != null) {
                     drawTree(
                         treeViewerPane,
-                        root,
+                        morseTree.getRoot(),
                         newVal.getWidth() / 2,
                         50,
                         INITIAL_HORIZONTAL_GAP
@@ -95,9 +92,8 @@ public class MorseController {
     }
 
     private void autoFill() {
-        Node<String> root = morseTree.getRoot();
         for (MorseCode letter : MorseCode.values()) {
-            morseTree.put(root, letter.getCode(), letter.toString());
+            morseTree.put(morseTree.getRoot(), letter.getCode(), letter.toString());
         }
     }
 
@@ -122,7 +118,7 @@ public class MorseController {
             return;
         }
 
-        String text = morseTree.decode(morse);
+        String text = morseTree.decode(morse, redraw);
         if (text == null || text.isBlank()) {
             morsePadTextOutput.clear();
             return;
@@ -150,7 +146,7 @@ public class MorseController {
         String text = inputText.getText();
         if (text == null || text.isBlank()) return;
 
-        String morseCode = morseTree.encode(text);
+        String morseCode = morseTree.encode(text, redraw);
         if (morseCode == null || morseCode.isBlank() || hasInvalidChars(morseCode)) {
             resultText.clear();
             return;
@@ -164,7 +160,7 @@ public class MorseController {
         String morse = inputText.getText();
         if (morse == null || morse.isBlank() || hasInvalidChars(morse)) return;
 
-        String text = morseTree.decode(morse);
+        String text = morseTree.decode(morse, redraw);
         if (text == null || text.isBlank()) return;
 
         resultText.setText(text);
@@ -179,31 +175,39 @@ public class MorseController {
     @FXML
     protected void handleAddMorseSubmitButton() {
         String code = addMorseInput.getText();
-        String text = addTextInput.getText();
+        String text = addTextInput.getText().toUpperCase();
 
         if (code == null || code.isBlank() || hasInvalidChars(code)) return;
         if (text == null || text.isBlank()) return;
 
-        morseTree.put(root, code, text);
-
-        treeViewerPane.getChildren().clear();
-        drawTree(treeViewerPane, root, treeViewerPane.getWidth() / 2, 50, INITIAL_HORIZONTAL_GAP);
+        morseTree.put(morseTree.getRoot(), code, text);
+        redraw.run();
     }
 
     @FXML
     protected void handleAddMorseClearButton() {
         morseTree = new MorseTree<>("");
-        this.root = morseTree.getRoot();
-        treeViewerPane.getChildren().clear();
-        drawTree(treeViewerPane, root, treeViewerPane.getWidth() / 2, 50, INITIAL_HORIZONTAL_GAP);
+        redraw.run();
+        addMorseInput.clear();
+        addTextInput.clear();
     }
 
     @FXML
     protected void handleAddMorseAutoFillButton() {
         autoFill();
-        treeViewerPane.getChildren().clear();
-        drawTree(treeViewerPane, root, treeViewerPane.getWidth() / 2, 50, INITIAL_HORIZONTAL_GAP);
+        redraw.run();
     }
+
+    public Runnable redraw = () -> {
+        treeViewerPane.getChildren().clear();
+        drawTree(
+            treeViewerPane,
+            morseTree.getRoot(),
+            treeViewerPane.getWidth() / 2,
+            50,
+            INITIAL_HORIZONTAL_GAP
+        );
+    };
 
     private boolean hasInvalidChars(String morse) {
         for (char c : morse.toCharArray()) {
@@ -234,14 +238,24 @@ public class MorseController {
             drawTree(pane, node.right, childX, childY, hGap / 2);
         }
 
-        Circle circle = new Circle(x, y, NODE_RADIUS);
-        circle.setFill(Color.WHITE);
-        circle.setStroke(Color.RED);
-        circle.setStrokeWidth(1);
+        Circle circle;
+
+        if (node.circle == null) {
+            circle = new Circle(x, y, NODE_RADIUS);
+            circle.setFill(Color.WHITE);
+            circle.setStroke(Color.DARKGRAY);
+            circle.setStrokeWidth(1);
+            node.circle = circle;
+        } else {
+            circle = node.circle;
+        }
 
         Text text = new Text(x - 5, y + 5, (node.value != null) ? String.valueOf(node.value) : "");
         text.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
 
-        pane.getChildren().addAll(circle, text);
+        if (!pane.getChildren().contains(circle)) {
+            pane.getChildren().add(circle);
+        }
+        pane.getChildren().add(text);
     }
 }

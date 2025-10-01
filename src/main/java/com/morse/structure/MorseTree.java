@@ -1,5 +1,7 @@
 package com.morse.structure;
 
+import javafx.scene.paint.Color;
+
 public class MorseTree<T> {
 
     private final Node<T> root;
@@ -30,16 +32,18 @@ public class MorseTree<T> {
         curr.value = value;
     }
 
-    public String encode(String text) {
+    public String encode(String text, Runnable redrawCallback) {
         StringBuilder encoded = new StringBuilder();
         for (char c : text.toUpperCase().toCharArray()) {
             encoded.append(recursiveEncode(root, String.valueOf(c)));
             encoded.append(" ");
+            redrawCallback.run();
         }
+
         return encoded.toString().trim();
     }
 
-    public String decode(String morseCode) {
+    public String decode(String morseCode, Runnable redrawCallback) {
         String[] morseArray = morseCode.split(" ");
         StringBuilder decoded = new StringBuilder();
 
@@ -47,6 +51,7 @@ public class MorseTree<T> {
             String result = recursiveDecode(root, morse);
             if (result == null) return null;
             decoded.append(result);
+            redrawCallback.run();
         }
 
         return decoded.toString();
@@ -54,19 +59,30 @@ public class MorseTree<T> {
 
     private String recursiveEncode(Node<T> node, String value) {
         if (node == null) return null;
-        if (node.value.equals(value)) return "";
+
+        if (node.value.equals(value)) {
+            node.circle.setStroke(Color.GREEN);
+            return "";
+        }
 
         String left = recursiveEncode(node.left, value);
-        if (left != null) return "." + left;
+        if (left != null) {
+            node.circle.setStroke(Color.GREEN);
+            return "." + left;
+        }
 
         String right = recursiveEncode(node.right, value);
-        if (right != null) return "-" + right;
+        if (right != null) {
+            node.circle.setStroke(Color.GREEN);
+            return "-" + right;
+        }
 
         return null;
     }
 
     private String recursiveDecode(Node<T> node, String morse) {
         if (node == null) return null;
+        node.circle.setStroke(Color.GREEN);
         if (morse.isEmpty()) return (String) node.value;
 
         char token = morse.charAt(0);

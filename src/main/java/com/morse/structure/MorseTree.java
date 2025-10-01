@@ -1,4 +1,4 @@
-package com.example.morse.structure;
+package com.morse.structure;
 
 public class MorseTree<T> {
 

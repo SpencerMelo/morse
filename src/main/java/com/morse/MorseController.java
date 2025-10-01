@@ -1,8 +1,8 @@
-package com.example.morse;
+package com.morse;
 
-import com.example.morse.structure.MorseTree;
-import com.example.morse.structure.Node;
-import com.example.morse.utils.MorseCode;
+import com.morse.structure.MorseTree;
+import com.morse.structure.Node;
+import com.morse.utils.MorseCode;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;

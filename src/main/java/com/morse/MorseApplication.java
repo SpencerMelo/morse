@@ -1,4 +1,4 @@
-package com.example.morse;
+package com.morse;
 
 import java.io.IOException;
 import javafx.application.Application;

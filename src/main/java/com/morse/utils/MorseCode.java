@@ -1,4 +1,4 @@
-package com.example.morse.utils;
+package com.morse.utils;
 
 public enum MorseCode {
     A(".-"),

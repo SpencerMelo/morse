@@ -1,6 +1,7 @@
-package com.example.morse.structure;
+package com.morse.structure;
 
 public class Node<T> {
+
     public T value;
     public Node<T> left;
     public Node<T> right;

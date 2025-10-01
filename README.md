@@ -51,7 +51,7 @@ mvn clean javafx:run
 ## Project Structure
 
 ```
-src/main/java/com/example/morse/
+src/main/java/com/morse/
 ├── MorseApplication.java       # Main JavaFX application class
 ├── MorseController.java        # UI controller with event handlers
 ├── structure/
@@ -60,7 +60,7 @@ src/main/java/com/example/morse/
 └── utils/
     └── MorseCode.java          # Enum with standard Morse code mappings
 
-src/main/resources/com/example/morse/
+src/main/resources/com/morse/
 └── app-view.fxml               # JavaFX UI layout definition
 ```
 

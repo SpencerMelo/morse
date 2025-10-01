@@ -153,12 +153,20 @@
             <Button
                 fx:id="addMorseSubmitButton"
                 mnemonicParsing="false"
+                onAction="#handleAddMorseSubmitButton"
                 text="Add"
             />
             <Button
                 fx:id="addMorseClearButton"
                 mnemonicParsing="false"
+                onAction="#handleAddMorseClearButton"
                 text="Clear"
+            />
+            <Button
+                fx:id="addMorseAutoFillButton"
+                mnemonicParsing="false"
+                onAction="#handleAddMorseAutoFillButton"
+                text="Auto Fill"
             />
         </HBox>
     </VBox>

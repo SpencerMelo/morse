@@ -65,16 +65,18 @@ public class MorseController {
     @FXML
     private Button addMorseClearButton;
 
+    @FXML
+    private Button addMorseAutoFillButton;
+
     private long padPressTime;
 
     private MorseTree<String> morseTree;
 
-    private Node<?> root;
+    private Node<String> root;
 
     @FXML
     private void initialize() {
         morseTree = new MorseTree<>("");
-        autoFill();
         this.root = morseTree.getRoot();
 
         treeViewerPane
@@ -174,6 +176,35 @@ public class MorseController {
         resultText.clear();
     }
 
+    @FXML
+    protected void handleAddMorseSubmitButton() {
+        String code = addMorseInput.getText();
+        String text = addTextInput.getText();
+
+        if (code == null || code.isBlank() || hasInvalidChars(code)) return;
+        if (text == null || text.isBlank()) return;
+
+        morseTree.put(root, code, text);
+
+        treeViewerPane.getChildren().clear();
+        drawTree(treeViewerPane, root, treeViewerPane.getWidth() / 2, 50, INITIAL_HORIZONTAL_GAP);
+    }
+
+    @FXML
+    protected void handleAddMorseClearButton() {
+        morseTree = new MorseTree<>("");
+        this.root = morseTree.getRoot();
+        treeViewerPane.getChildren().clear();
+        drawTree(treeViewerPane, root, treeViewerPane.getWidth() / 2, 50, INITIAL_HORIZONTAL_GAP);
+    }
+
+    @FXML
+    protected void handleAddMorseAutoFillButton() {
+        autoFill();
+        treeViewerPane.getChildren().clear();
+        drawTree(treeViewerPane, root, treeViewerPane.getWidth() / 2, 50, INITIAL_HORIZONTAL_GAP);
+    }
+
     private boolean hasInvalidChars(String morse) {
         for (char c : morse.toCharArray()) {
             if (c == ' ') continue;
@@ -185,7 +216,6 @@ public class MorseController {
     private void drawTree(Pane pane, Node<?> node, double x, double y, double hGap) {
         if (node == null) return;
 
-        // Draw lines to children first (so they appear behind nodes)
         if (node.left != null) {
             double childX = x - hGap;
             double childY = y + VERTICAL_GAP;
@@ -204,13 +234,12 @@ public class MorseController {
             drawTree(pane, node.right, childX, childY, hGap / 2);
         }
 
-        // Draw the node itself
         Circle circle = new Circle(x, y, NODE_RADIUS);
         circle.setFill(Color.WHITE);
         circle.setStroke(Color.RED);
         circle.setStrokeWidth(1);
 
-        Text text = new Text(x - 5, y + 5, String.valueOf(node.value));
+        Text text = new Text(x - 5, y + 5, (node.value != null) ? String.valueOf(node.value) : "");
         text.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
 
         pane.getChildren().addAll(circle, text);

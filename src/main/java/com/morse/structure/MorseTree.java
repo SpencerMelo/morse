@@ -14,22 +14,33 @@ public class MorseTree<T> {
         return root;
     }
 
-    public void put(Node<T> node, String code, T value) {
-        Node<T> curr = node;
-        for (char token : code.toCharArray()) {
-            curr = switch (token) {
-                case '.' -> {
-                    if (curr.left == null) curr.left = new Node<>(null);
-                    yield curr.left;
-                }
-                case '-' -> {
-                    if (curr.right == null) curr.right = new Node<>(null);
-                    yield curr.right;
-                }
-                default -> throw new IllegalArgumentException("Invalid token: " + token);
-            };
+
+    public void put(String code, T value) {
+        recursivePut(this.root, code, 0, value);
+    }
+
+    private void recursivePut(Node<T> node, String code, int index, T value) {
+
+        if (index == code.length()) {
+            node.value = value;
+            return;
         }
-        curr.value = value;
+
+        char token = code.charAt(index);
+
+        if (token == '.') {
+            if (node.left == null) {
+                node.left = new Node<>(null);
+            }
+            recursivePut(node.left, code, index + 1, value);
+        } else if (token == '-') {
+            if (node.right == null) {
+                node.right = new Node<>(null);
+            }
+            recursivePut(node.right, code, index + 1, value);
+        } else {
+            throw new IllegalArgumentException("Invalid token: " + token);
+        }
     }
 
     public String encode(String text, Runnable redrawCallback) {
@@ -60,7 +71,7 @@ public class MorseTree<T> {
     private String recursiveEncode(Node<T> node, String value) {
         if (node == null) return null;
 
-        if (node.value.equals(value)) {
+        if (node.value != null && node.value.equals(value)) {
             node.circle.setStroke(Color.GREEN);
             return "";
         }

@@ -77,23 +77,23 @@ public class MorseController {
         morseTree = new MorseTree<>("");
 
         treeViewerPane
-            .layoutBoundsProperty()
-            .addListener((obs, oldVal, newVal) -> {
-                if (newVal.getWidth() > 0 && morseTree.getRoot() != null) {
-                    drawTree(
-                        treeViewerPane,
-                        morseTree.getRoot(),
-                        newVal.getWidth() / 2,
-                        50,
-                        INITIAL_HORIZONTAL_GAP
-                    );
-                }
-            });
+                .layoutBoundsProperty()
+                .addListener((obs, oldVal, newVal) -> {
+                    if (newVal.getWidth() > 0 && morseTree.getRoot() != null) {
+                        drawTree(
+                                treeViewerPane,
+                                morseTree.getRoot(),
+                                newVal.getWidth() / 2,
+                                50,
+                                INITIAL_HORIZONTAL_GAP
+                        );
+                    }
+                });
     }
 
     private void autoFill() {
         for (MorseCode letter : MorseCode.values()) {
-            morseTree.put(morseTree.getRoot(), letter.getCode(), letter.toString());
+            morseTree.put(letter.getCode(), letter.toString());
         }
     }
 
@@ -170,6 +170,7 @@ public class MorseController {
     protected void handleClear() {
         inputText.clear();
         resultText.clear();
+        redraw.run();
     }
 
     @FXML
@@ -180,7 +181,7 @@ public class MorseController {
         if (code == null || code.isBlank() || hasInvalidChars(code)) return;
         if (text == null || text.isBlank()) return;
 
-        morseTree.put(morseTree.getRoot(), code, text);
+        morseTree.put(code, text);
         redraw.run();
     }
 
@@ -201,11 +202,11 @@ public class MorseController {
     public Runnable redraw = () -> {
         treeViewerPane.getChildren().clear();
         drawTree(
-            treeViewerPane,
-            morseTree.getRoot(),
-            treeViewerPane.getWidth() / 2,
-            50,
-            INITIAL_HORIZONTAL_GAP
+                treeViewerPane,
+                morseTree.getRoot(),
+                treeViewerPane.getWidth() / 2,
+                50,
+                INITIAL_HORIZONTAL_GAP
         );
     };
 

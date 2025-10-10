@@ -14,13 +14,11 @@ public class MorseTree<T> {
         return root;
     }
 
-
     public void put(String code, T value) {
         recursivePut(this.root, code, 0, value);
     }
 
     private void recursivePut(Node<T> node, String code, int index, T value) {
-
         if (index == code.length()) {
             node.value = value;
             return;
@@ -46,7 +44,7 @@ public class MorseTree<T> {
     public String encode(String text, Runnable redrawCallback) {
         StringBuilder encoded = new StringBuilder();
         for (char c : text.toUpperCase().toCharArray()) {
-            encoded.append(recursiveEncode(root, String.valueOf(c)));
+            if (c != ' ') encoded.append(recursiveEncode(root, String.valueOf(c)));
             encoded.append(" ");
             redrawCallback.run();
         }

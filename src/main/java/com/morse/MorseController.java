@@ -77,18 +77,18 @@ public class MorseController {
         morseTree = new MorseTree<>("");
 
         treeViewerPane
-                .layoutBoundsProperty()
-                .addListener((obs, oldVal, newVal) -> {
-                    if (newVal.getWidth() > 0 && morseTree.getRoot() != null) {
-                        drawTree(
-                                treeViewerPane,
-                                morseTree.getRoot(),
-                                newVal.getWidth() / 2,
-                                50,
-                                INITIAL_HORIZONTAL_GAP
-                        );
-                    }
-                });
+            .layoutBoundsProperty()
+            .addListener((obs, oldVal, newVal) -> {
+                if (newVal.getWidth() > 0 && morseTree.getRoot() != null) {
+                    drawTree(
+                        treeViewerPane,
+                        morseTree.getRoot(),
+                        newVal.getWidth() / 2,
+                        50,
+                        INITIAL_HORIZONTAL_GAP
+                    );
+                }
+            });
     }
 
     private void autoFill() {
@@ -143,7 +143,7 @@ public class MorseController {
 
     @FXML
     protected void handleToMorse() {
-        String text = inputText.getText();
+        String text = inputText.getText().replaceAll("\\s+", " ");
         if (text == null || text.isBlank()) return;
 
         String morseCode = morseTree.encode(text, redraw);
@@ -202,11 +202,11 @@ public class MorseController {
     public Runnable redraw = () -> {
         treeViewerPane.getChildren().clear();
         drawTree(
-                treeViewerPane,
-                morseTree.getRoot(),
-                treeViewerPane.getWidth() / 2,
-                50,
-                INITIAL_HORIZONTAL_GAP
+            treeViewerPane,
+            morseTree.getRoot(),
+            treeViewerPane.getWidth() / 2,
+            50,
+            INITIAL_HORIZONTAL_GAP
         );
     };
 
